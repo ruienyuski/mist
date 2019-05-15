@@ -49,9 +49,9 @@
                 <img class="ml-2" src="@/assets/static/images/logo_img/ic-facebook.svg" alt>
               </div>
               <div class="address">
-                <p>07-1234-5678</p>
-                <p>sweetaste@email.com</p>
-                <p>800 高雄市新興區幸福路 520 號</p>              
+                <p>07-6666-7777</p>
+                <p>mistcoffee@email.com</p>
+                <p>807 高雄市三民區迷霧路 999 號</p>              
               </div>              
               <div class="mobile mobile_copyright">© 2019 MistCoffee All Rights Reserved</div>
 

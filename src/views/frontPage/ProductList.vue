@@ -4,7 +4,7 @@
       <div class="row">
         <div class="col-lg-3 col-md-12 col-12 mb-3">
           <ul class="list-group product_list">
-            <li class="list-group-item list-style active">甜點類別</li>
+            <li class="list-group-item list-style active">商品類別</li>
             <li class="list-group-item list-style" :class="{select:visibility == 'all'}">
               <a href="#" @click.prevent="visibility = 'all'" style="display:block;">全部商品</a>
             </li>
