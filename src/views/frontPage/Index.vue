@@ -3,7 +3,7 @@
     <div class="container">
       <div class="row">
         <div class="col-lg-12 mobile_header relative">
-          <div class="header bg-cover" style="background-image:url(http://t.cn/EKMFEvz)"></div>
+          <div class="header bg-cover" style="background-image:url(https://images.unsplash.com/photo-1482242248426-c4e9fe3a559a?ixlib=rb-1.2.1)"></div>
           <div class="salemenu">
             <div class="opacity">
               <div class="bg_blur blur_img01"></div>
@@ -32,7 +32,7 @@
         <div class="row home_ad_bg justify-content-center">
           <div
             class="home_ad_img col-lg-4 col-12 bg-cover"
-            style="background-image:url(http://t.cn/EKMshnJ)"
+            style="background-image:url(https://images.unsplash.com/photo-1497935586351-b67a49e012bf?ixlib=rb-1.2.1)"
           ></div>
           <div
             class="col-lg-5 col-12 pl-5 pt-4 home_ad_txt row
