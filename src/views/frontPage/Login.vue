@@ -84,6 +84,8 @@ export default {
         username: '',
         password: '',
       },
+      token: '',
+      expired: '',
     };
   },
   methods: {
@@ -93,6 +95,9 @@ export default {
       this.$http.post(api, vm.user).then((response) => {
         // console.log(response.data);
         if (response.data.success) {
+          vm.token = response.data.token;
+          vm.expired = response.data.expired;
+          document.cookie = `hexAPIToken=${vm.token};expires=${new Date(vm.expired)};`;
           vm.$router.push('/admin/customer_order');
         }
       });

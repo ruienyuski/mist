@@ -24,5 +24,9 @@ export default {
     Navbar,
     Alert,
   },
+  created() {
+    const token = document.cookie.replace(/(?:(?:^|.*;\s*)hexAPIToken\s*=\s*([^;]*).*$)|^.*$/, '$1');
+    this.$http.defaults.headers.common.Authorization = `${token}`;
+  },
 };
 </script>
