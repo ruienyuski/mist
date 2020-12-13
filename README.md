@@ -1,4 +1,4 @@
-# vuewebdemo
+# Mist Coffee
 
 ## Project setup
 ```
