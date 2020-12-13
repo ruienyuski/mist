@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div class="container container_mb">
+    <div class="container">
       <div class="row justify-content-center">
         <div class="col-lg-5 login_width">
-          <form @submit.prevent="signIn">
+          <form @submit.prevent="signin">
             <div class="card text-center login_bg">
               <div class="card-body">
                 <h5 class="card-title">後台登入</h5>
@@ -40,7 +40,7 @@
                         type="email"
                         class="form-control form-control-lg"
                         id="email"
-                        v-model="user.username"
+                        v-model="user.email"
                         placeholder="請輸入email"
                         required
                       >
@@ -77,29 +77,33 @@
 
 <script>
 export default {
-  name: 'Login',
   data() {
     return {
       user: {
-        username: '',
+        email: '',
         password: '',
       },
-      token: '',
-      expired: '',
     };
   },
   methods: {
-    signIn() {
-      const api = `${process.env.VUE_APP_APIPATH}/admin/signin`;
-      const vm = this;
-      this.$http.post(api, vm.user).then((response) => {
-        // console.log(response.data);
-        if (response.data.success) {
-          vm.token = response.data.token;
-          vm.expired = response.data.expired;
-          document.cookie = `hexAPIToken=${vm.token};expires=${new Date(vm.expired)};`;
-          vm.$router.push('/admin/customer_order');
-        }
+    signin() {
+      const api = `${process.env.VUE_APP_APIPATH}/api/auth/login`;
+      this.$http.post(api, this.user).then((response) => {
+        const data = {
+          token: response.data.token,
+          expires: response.data.expires,
+        };
+        console.log(response.data.token);
+        // 寫入 cookie token
+        // expires 設置有效時間
+        document.cookie = `token=${data.token};expires=${new Date(data.expired * 1000)}; path=/`;
+        this.$bus.$emit('webmessage',
+          '登入成功',
+          'success');
+        this.$router.push('/admin');
+      }).catch((error) => {
+        // eslint-disable-next-line
+        console.log(error);
       });
     },
   },

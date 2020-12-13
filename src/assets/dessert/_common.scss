@@ -24,6 +24,18 @@ $display_n:none;
 
 
 /*common*/
+html, body, #app {
+  height: 100%;
+}
+footer {
+  height: 15%;
+}
+.flexcontent {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between;
+}
 .wrap {
   max-width: 1024px;
   width: 100%;

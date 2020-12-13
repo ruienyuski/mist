@@ -1,5 +1,38 @@
 <template>
   <div>
+    <!-- swiper 測試 -->
+    <!-- <div class="swiper-container banner-img">
+      <div class="swiper-wrapper">
+        <div
+          class="swiper-slide d-flex justify-content-center"
+        >
+        <img src="https://images.unsplash.com/photo-1605704366546-e3632af0c5c6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1342&q=80" alt="">
+        </div>
+        <div
+          class="swiper-slide d-flex justify-content-center"
+        >
+        <img src="https://images.unsplash.com/photo-1602524818604-fb5277190621?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1351&q=80" alt="">
+        </div>
+        <div
+          class="swiper-slide d-flex justify-content-center"
+        >
+        <img src="https://images.unsplash.com/photo-1605790194685-2c1f695de2b6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80" alt="">
+        </div>
+        <div
+          class="swiper-slide d-flex justify-content-center"
+        >
+        <img src="https://images.unsplash.com/photo-1605688180060-d86e3caf88e0?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80" alt="">
+        </div>
+        <div
+          class="swiper-slide d-flex justify-content-center"
+        >
+        <img src="https://images.unsplash.com/photo-1601649705707-13b54dc57b87?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1313&q=80" alt="">
+        </div>
+      </div>
+      <div class="swiper-pagination"></div>
+      <div class="swiper-button-prev d-none d-md-block"></div>
+      <div class="swiper-button-next d-none d-md-block"></div>
+    </div> -->
     <div class="container">
       <div class="row">
         <div class="col-lg-12 mobile_header relative">
@@ -42,9 +75,8 @@
               關於我們
             </div>
             <div class="home_ad_p_txt col-lg-12 col-12">
-              <p>從咖啡分析性格與個性，不管未來有何嚴峻挑戰，請放鬆心情享受這一刻美好!</p>
-              <p>性格分析皆從網路蒐集，僅作參考用!!</p>
-              <p class="blockquote-footer">文章來源：<a href="http://blog.udn.com/anna61224/7285293" target="blank">網路</a></p>
+              <p>不管未來有何嚴峻挑戰，請放鬆心情享受這一刻美好!</p>
+              <p class="blockquote-footer">網站內容皆從網路蒐集，僅作參考用!!</p>
             </div>
           </div>
         </div>
@@ -73,7 +105,7 @@
             <router-link :to="{name:'ProductDetail',params:{id:item.id}}">
               <div
                 class="bg-cover product_card_img"
-                :style="`background-image: url(${item.image})`"
+                :style="`background-image: url(${item.imageUrl[0]})`"
               ></div>
             </router-link>
 
@@ -118,7 +150,7 @@
             <router-link :to="{name:'ProductDetail',params:{id:item.id}}">
               <div
                 class="bg-cover product_card_img"
-                :style="`background-image: url(${item.image})`"
+                :style="`background-image: url(${item.imageUrl[0]})`"
               ></div>
             </router-link>
 
@@ -165,7 +197,7 @@
             <router-link :to="{name:'ProductDetail',params:{id:item.id}}">
               <div
                 class="bg-cover product_card_img"
-                :style="`background-image: url(${item.image})`"
+                :style="`background-image: url(${item.imageUrl[0]})`"
               ></div>
             </router-link>
 
@@ -198,9 +230,14 @@
     </div>
   </div>
 </template>
+
 <script>
+// @ is an alias to /src
+
+// import SwiperCore, { Swiper, Navigation, Pagination, Autoplay } from 'swiper'
+// import 'swiper/swiper-bundle.css'
 export default {
-  name: 'index',
+  name: 'Home',
   data() {
     return {
       products: [],
@@ -210,12 +247,11 @@ export default {
   methods: {
     getProduct() {
       const vm = this;
-      const api = `${process.env.VUE_APP_APIPATH}/api/${
-        process.env.VUE_APP_CUSTOMPATH
-      }/products/all`;
+      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/products`;
       this.$http.get(api).then((response) => {
-        // console.log(response.data.products)
-        vm.products = response.data.products;
+        console.log(response);
+        vm.products = response.data.data;
+        console.log(vm.products);
       });
     },
   },
@@ -242,5 +278,28 @@ export default {
   created() {
     this.getProduct();
   },
+  // components: {
+  //   SwiperCore,
+  //   Swiper,
+  // },
+  // mounted () {
+  // /* eslint-disable no-new */
+  //   const swiper = new Swiper('.swiper-container', {
+  //     direction: 'horizontal',
+  //     loop: true,
+  //     speed: 1000,
+  //     autoplay: {
+  //       delay: 2000,
+  //       disableOnInteraction: false
+  //     },
+  //     pagination: {
+  //       el: '.swiper-pagination'
+  //     },
+  //     navigation: {
+  //       nextEl: '.swiper-button-next',
+  //       prevEl: '.swiper-button-prev'
+  //     }
+  //   })
+  // }
 };
 </script>

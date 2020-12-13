@@ -2,7 +2,7 @@
   <div>
     <loading :active.sync="isLoading"></loading>
     <div class="text-right">
-      <button class="mt-3 btn btn-primary"
+      <button class="btn btn-primary"
       @click="openModal(true)"
       data-toggle="modal"
       data-target="#CouponsModal">建立新的優惠卷</button>
@@ -24,10 +24,10 @@
             {{item.percent}} %
           </td>
           <td>
-            {{ item.due_date | date }}
+            {{ item.deadline.datetime }}
           </td>
           <td>
-            <span class="text-success" v-if="item.is_enabled === 1">啟用</span>
+            <span class="text-success" v-if="item.enabled === true">啟用</span>
             <span v-else>未啟用</span>
           </td>
           <td>
@@ -39,7 +39,7 @@
         </tr>
       </tbody>
     </table>
-
+    <Pagination :pages="pagination" @updatepage="getCoupons"></Pagination>
     <!-- 編輯Modal -->
     <div
     class="modal fade"
@@ -83,7 +83,7 @@
                     <input type="number"
                     class="form-control"
                     id="PercentInput"
-                    v-model="percent"
+                    v-model="tempCoupons.percent"
                     placeholder="請輸入折扣百分比">
                   </div>
                   <div class="col-md-12 mb-3">
@@ -94,15 +94,23 @@
                     v-model="due_date"
                     placeholder="請選擇到期日">
                   </div>
+                  <div class="col-md-12 mb-3">
+                    <label for="due_time">到期時間</label>
+                    <input
+                      id="due_time"
+                      v-model="due_time"
+                      type="time"
+                      step="1"
+                      class="form-control"
+                    >
+                  </div>
                   <div class="custom-control custom-checkbox">
                     <input type="checkbox"
                     class="custom-control-input"
-                    id="is_enabled"
-                    v-model="tempCoupons.is_enabled"
-                    :true-value="1"
-                    :false-value="1"
+                    id="enabled"
+                    v-model="tempCoupons.enabled"
                     >
-                    <label class="custom-control-label" for="is_enabled">是否啟用</label>
+                    <label class="custom-control-label" for="enabled">是否啟用</label>
                   </div>
                 </form>
               </div>
@@ -142,6 +150,7 @@
 
 <script>
 import $ from 'jquery';
+import Pagination from '@/components/admin/Pagination.vue';
 
 export default {
   name: 'Coupons',
@@ -150,31 +159,28 @@ export default {
       coupons: [],
       tempCoupons: {
         title: '',
-        is_enabled: 0,
-        percent: 100,
-        due_date: 0,
+        enabled: false,
+        percent: 0,
+        deadline_at: '',
         code: '',
       },
       percent: [],
-      due_date: new Date(),
+      due_date: '',
+      due_time: '',
       isLoading: false,
       isNew: false,
     };
   },
-  watch: {
-    due_date() {
-      const vm = this;
-      const timestamp = Math.floor(new Date(vm.due_date) / 1000);
-      vm.tempCoupons.due_date = timestamp;
-    },
-  },
+  components: {
+    Pagination,
+  },  
   methods: {
     getCoupons(page = 1) {
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/coupons?page=${page}`;
+      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/coupons?page=${page}`;
       const vm = this;
       vm.isLoading = true;
       this.$http.get(api).then((response) => {
-        vm.coupons = response.data.coupons;
+        vm.coupons = response.data.data;         
         vm.isLoading = false;
       });
     },
@@ -183,47 +189,39 @@ export default {
       const vm = this;
       if (isNew) {
         vm.tempCoupons = {};
+        vm.due_date = '';
+        vm.due_time = '';
         vm.isNew = isNew;
       } else {
-        vm.tempCoupons = Object.assign({}, item);
-        vm.percent = vm.tempCoupons.percent;
-        const dateAndTime = new Date(vm.tempCoupons.due_date * 1000).toISOString().split('T');
-        // eslint-disable-next-line
-        vm.due_date = dateAndTime[0];
+        vm.tempCoupons = { ...item };
+        const dedlineAt = vm.tempCoupons.deadline.datetime.split(' ');
+        [vm.due_date, vm.due_time] = dedlineAt; // 日期
       }
       $('#CouponsModal').modal('show');
     },
 
     updateCoupons() {
-      let api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/coupon`;
+      let api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/coupon`;
       let httpMethod = 'post';
       const vm = this;
-      // eslint-disable-next-line
-      let percent = vm.percent;
+      let status = '新增優惠卷成功';
       if (!vm.isNew) {
-        api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/coupon/${vm.tempCoupons.id}`;
-        httpMethod = 'put';
-        vm.due_date = new Date(vm.tempCoupons.due_date * 1000);
-        if (percent < 0 || percent >= 100) {
-          vm.tempCoupons.percent = 0;
-        } else {
-          vm.tempCoupons.percent = vm.percent;
-        }
+        api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/coupon/${vm.tempCoupons.id}`;
+        httpMethod = 'patch';
+        status = '更新優惠卷成功';
       }
-      this.$http[httpMethod](api, { data: vm.tempCoupons }).then((response) => {
-        if (response.data.success) {
-          $('#CouponsModal').modal('hide');
-          vm.getCoupons();
-        }
-        // if(response.data.success) {
-        // $('#CouponsModal').modal('hide');
-        // vm.getCoupons();
-        // console.log('新增優惠卷成功');
-        // } else {
-        // $('#CouponsModal').modal('hide');
-        // vm.getCoupons();
-        // console.log('新增優惠卷失敗');
-        // }
+      this.tempCoupons.deadline_at = `${this.due_date} ${this.due_time}`;
+      console.log(this.tempCoupons.deadline_at);
+      this.$http[httpMethod](api, vm.tempCoupons).then((response) => {
+        $('#CouponsModal').modal('hide');
+        this.$bus.$emit('webmessage',
+          status,
+          'success');         
+        vm.getCoupons();
+      }).catch((err) => {
+        this.$bus.$emit('webmessage',
+          `更新出錯`,
+          'danger');  
       });
     },
 
@@ -233,8 +231,7 @@ export default {
     },
     deleteItem() {
       const vm = this;
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/coupon/${vm.tempCoupons.id}`;
-      // eslint-disable-next-line
+      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/coupon/${this.tempCoupons.id}`;
       this.$http.delete(api).then((response) => {
         $('#deleteModal').modal('hide');
         vm.getCoupons();

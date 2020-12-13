@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <header>
     <nav class="navbar navbar-expand-lg navbar-light bg-white py-4">
       <button
         class="navbar-toggler hamger"
@@ -17,7 +17,7 @@
       <router-link class="mobile ipad" to="/cart">
         <button class="btn btn-sm btn-cart">
           <i class="material-icons mobile ipad">shopping_cart</i>
-          <AddCart></AddCart>
+          <CartNum></CartNum>
         </button>
       </router-link>
       <div class="collapse navbar-collapse" id="navbarNav">
@@ -26,7 +26,7 @@
             <router-link class="nav-link" to="/">首頁</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" to="/product">商品</router-link>
+            <router-link class="nav-link" to="/products">商品</router-link>
           </li>
           <li class="nav-item">
             <router-link class="nav-link" to="/checkpayment">訂單查詢</router-link>
@@ -39,11 +39,11 @@
       <router-link class="desktop mt-4" to="/cart">
         <button class="btn btn-sm btn-cart">
           <i class="material-icons">shopping_cart</i>
-          <AddCart></AddCart>
+          <CartNum></CartNum>
         </button>
       </router-link>
     </nav>
-  </div>
+  </header>
 </template>
 <style>
 .btn-cart {
@@ -53,11 +53,11 @@
 </style>
 <script>
 import $ from 'jquery';
-import AddCart from '@/components/frontPage/AddCart.vue';
+import CartNum from '@/components/frontPage/CartNum.vue';
 
 export default {
   components: {
-    AddCart,
+    CartNum,
   },
   methods: {
     top() {

@@ -1,12 +1,11 @@
 <template>
-  <div>
-    <div class="container sticky-top" >
+  <div class="flexcontent">
+    <div class="container fixed-top" >
       <Header></Header>
     </div>
-    <Alert/>
-    <router-view >
+    <Toast />
+    <router-view>
     </router-view>
-
     <Footer></Footer>
   </div>
 </template>
@@ -14,15 +13,14 @@
 <script>
 import Header from '@/components/frontPage/Header.vue';
 import Footer from '@/components/frontPage/Footer.vue';
-import Alert from '@/components/backPage/AlertMessage.vue';
-
+import Toast from '@/components/Toasts.vue';
 
 export default {
-  name:'layout',
-  components:{
+  name: 'layout',
+  components: {
     Header,
     Footer,
-    Alert,
+    Toast,
   },
 };
 </script>
