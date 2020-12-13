@@ -2,7 +2,7 @@
   <div>
     <loading :active.sync="isLoading"></loading>
     <div class="text-right">
-      <button class="btn btn-primary"
+      <button class="mt-3 btn btn-primary"
       @click="openModal(true)"
       data-toggle="modal"
       data-target="#CouponsModal">建立新的優惠卷</button>
@@ -24,10 +24,10 @@
             {{item.percent}} %
           </td>
           <td>
-            {{ item.deadline.datetime }}
+            {{ item.due_date | date }}
           </td>
           <td>
-            <span class="text-success" v-if="item.enabled === true">啟用</span>
+            <span class="text-success" v-if="item.is_enabled === 1">啟用</span>
             <span v-else>未啟用</span>
           </td>
           <td>
@@ -39,7 +39,7 @@
         </tr>
       </tbody>
     </table>
-    <Pagination :pages="pagination" @updatepage="getCoupons"></Pagination>
+
     <!-- 編輯Modal -->
     <div
     class="modal fade"
@@ -83,7 +83,7 @@
                     <input type="number"
                     class="form-control"
                     id="PercentInput"
-                    v-model="tempCoupons.percent"
+                    v-model="percent"
                     placeholder="請輸入折扣百分比">
                   </div>
                   <div class="col-md-12 mb-3">
@@ -94,23 +94,15 @@
                     v-model="due_date"
                     placeholder="請選擇到期日">
                   </div>
-                  <div class="col-md-12 mb-3">
-                    <label for="due_time">到期時間</label>
-                    <input
-                      id="due_time"
-                      v-model="due_time"
-                      type="time"
-                      step="1"
-                      class="form-control"
-                    >
-                  </div>
                   <div class="custom-control custom-checkbox">
                     <input type="checkbox"
                     class="custom-control-input"
-                    id="enabled"
-                    v-model="tempCoupons.enabled"
+                    id="is_enabled"
+                    v-model="tempCoupons.is_enabled"
+                    :true-value="1"
+                    :false-value="1"
                     >
-                    <label class="custom-control-label" for="enabled">是否啟用</label>
+                    <label class="custom-control-label" for="is_enabled">是否啟用</label>
                   </div>
                 </form>
               </div>
@@ -150,7 +142,6 @@
 
 <script>
 import $ from 'jquery';
-import Pagination from '@/components/admin/Pagination.vue';
 
 export default {
   name: 'Coupons',
@@ -159,28 +150,31 @@ export default {
       coupons: [],
       tempCoupons: {
         title: '',
-        enabled: false,
-        percent: 0,
-        deadline_at: '',
+        is_enabled: 0,
+        percent: 100,
+        due_date: 0,
         code: '',
       },
       percent: [],
-      due_date: '',
-      due_time: '',
+      due_date: new Date(),
       isLoading: false,
       isNew: false,
     };
   },
-  components: {
-    Pagination,
-  },  
+  watch: {
+    due_date() {
+      const vm = this;
+      const timestamp = Math.floor(new Date(vm.due_date) / 1000);
+      vm.tempCoupons.due_date = timestamp;
+    },
+  },
   methods: {
     getCoupons(page = 1) {
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/coupons?page=${page}`;
+      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/coupons?page=${page}`;
       const vm = this;
       vm.isLoading = true;
       this.$http.get(api).then((response) => {
-        vm.coupons = response.data.data;         
+        vm.coupons = response.data.coupons;
         vm.isLoading = false;
       });
     },
@@ -189,39 +183,47 @@ export default {
       const vm = this;
       if (isNew) {
         vm.tempCoupons = {};
-        vm.due_date = '';
-        vm.due_time = '';
         vm.isNew = isNew;
       } else {
-        vm.tempCoupons = { ...item };
-        const dedlineAt = vm.tempCoupons.deadline.datetime.split(' ');
-        [vm.due_date, vm.due_time] = dedlineAt; // 日期
+        vm.tempCoupons = Object.assign({}, item);
+        vm.percent = vm.tempCoupons.percent;
+        const dateAndTime = new Date(vm.tempCoupons.due_date * 1000).toISOString().split('T');
+        // eslint-disable-next-line
+        vm.due_date = dateAndTime[0];
       }
       $('#CouponsModal').modal('show');
     },
 
     updateCoupons() {
-      let api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/coupon`;
+      let api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/coupon`;
       let httpMethod = 'post';
       const vm = this;
-      let status = '新增優惠卷成功';
+      // eslint-disable-next-line
+      let percent = vm.percent;
       if (!vm.isNew) {
-        api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/coupon/${vm.tempCoupons.id}`;
-        httpMethod = 'patch';
-        status = '更新優惠卷成功';
+        api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/coupon/${vm.tempCoupons.id}`;
+        httpMethod = 'put';
+        vm.due_date = new Date(vm.tempCoupons.due_date * 1000);
+        if (percent < 0 || percent >= 100) {
+          vm.tempCoupons.percent = 0;
+        } else {
+          vm.tempCoupons.percent = vm.percent;
+        }
       }
-      this.tempCoupons.deadline_at = `${this.due_date} ${this.due_time}`;
-      console.log(this.tempCoupons.deadline_at);
-      this.$http[httpMethod](api, vm.tempCoupons).then((response) => {
-        $('#CouponsModal').modal('hide');
-        this.$bus.$emit('webmessage',
-          status,
-          'success');         
-        vm.getCoupons();
-      }).catch((err) => {
-        this.$bus.$emit('webmessage',
-          `更新出錯`,
-          'danger');  
+      this.$http[httpMethod](api, { data: vm.tempCoupons }).then((response) => {
+        if (response.data.success) {
+          $('#CouponsModal').modal('hide');
+          vm.getCoupons();
+        }
+        // if(response.data.success) {
+        // $('#CouponsModal').modal('hide');
+        // vm.getCoupons();
+        // console.log('新增優惠卷成功');
+        // } else {
+        // $('#CouponsModal').modal('hide');
+        // vm.getCoupons();
+        // console.log('新增優惠卷失敗');
+        // }
       });
     },
 
@@ -231,7 +233,8 @@ export default {
     },
     deleteItem() {
       const vm = this;
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/coupon/${this.tempCoupons.id}`;
+      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/admin/coupon/${vm.tempCoupons.id}`;
+      // eslint-disable-next-line
       this.$http.delete(api).then((response) => {
         $('#deleteModal').modal('hide');
         vm.getCoupons();

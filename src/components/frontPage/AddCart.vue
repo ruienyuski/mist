@@ -1,12 +1,12 @@
 <template>
-  <span class="badge badge-pill badge-danger" v-if="nowNum!== 0 ">{{nowNum}}</span>
+  <span class="badge badge-pill badge-danger" v-if="cartNum!== 0 ">{{cartNum}}</span>
 </template>
 <script>
 export default {
-  name: 'CartNum',
+  name: 'AddCart',
   data() {
     return {
-      nowNum: null,
+      cartNum: null,
       message: [],
     };
   },
@@ -14,10 +14,12 @@ export default {
     // eslint-disable-next-line
     getCartNum(message) {
       const vm = this;
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping`;
+      const api = `${process.env.VUE_APP_APIPATH}/api/${
+        process.env.VUE_APP_CUSTOMPATH
+      }/cart`;
       const cartNum = null;
       this.$http.get(api).then((response) => {
-        vm.nowNum = response.data.data.length;
+        vm.cartNum = response.data.data.carts.length;
         vm.message.push({ cartNum });
       });
     },
@@ -25,8 +27,8 @@ export default {
   created() {
     const vm = this;
     this.getCartNum();
-    vm.$bus.$on('cart_num', (item) => {
-      vm.getCartNum(item);
+    vm.$bus.$on('message:push', (cartNum) => {
+      vm.getCartNum(cartNum);
     });
   },
 };

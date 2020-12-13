@@ -49,18 +49,19 @@ export default {
 
     nextStep() {
       const vm = this;
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/orders/${vm.orderId}`;
+      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/order/${vm.orderId}`;
       vm.is_loading = true;
       this.$http.get(api).then((response) => {
-        console.log(response);
-        vm.$router.push(`/payment/${vm.orderId}`);
+        if (response.data.success) {
+          vm.$router.push(`/payment/${vm.orderId}`);
+        }
         vm.is_loading = false;
-      }).catch((error) => {
-        this.$bus.$emit('webmessage',
-          '找不到該筆訂單資料，請重新確認~',
-          'danger');           
       });
     },
+  },
+  created() {
+    this.orderId = this.$route.params.orderId;
+    // this.nextStep();
   },
 };
 </script>

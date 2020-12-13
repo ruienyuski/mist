@@ -9,7 +9,7 @@
               <router-link to="/">Home</router-link>
             </li>
             <li class="breadcrumb-item">
-              <router-link to="/products">全部商品</router-link>
+              <router-link to="/product">全部商品</router-link>
             </li>
             <li class="breadcrumb-item active" aria-current="page">{{product.title}}</li>
           </ol>
@@ -39,7 +39,7 @@
                 <button
                   class="btn btn-primary"
                   type="button"
-                  @click="addtoCart(product,product.num)"
+                  @click="addtoCart(product.id,product.num)"
                 >
                   加到購物車
                   <i class="fas fa-spinner fa-spin" v-if="status.loadingItem == product.id"></i>
@@ -49,7 +49,7 @@
           </div>
 
           <div class="col-md-8">
-            <img class="img-fluid w-100 mb-5" :src="product.imageUrl">
+            <img class="img-fluid w-100 mb-5" :src="product.imageUrl" alt>
             <h3>{{product.description}}</h3>
             <p class="product_Text">{{product.content}}</p>
           </div>
@@ -63,7 +63,7 @@
 // eslint-disable-next-line
 import $ from 'jquery';
 export default {
-  name: 'ProductDetail',
+  name: 'Productdetail',
   data() {
     return {
       id: '',
@@ -77,32 +77,30 @@ export default {
   },
   methods: {
     getItem(id) {
-      this.isLoading = true;
+      const vm = this;
       // eslint-disable-next-line
       id = this.$route.params.id;
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/product/${id}`;
+      const api = `${process.env.VUE_APP_APIPATH}/api/${
+        process.env.VUE_APP_CUSTOMPATH
+      }/product/${id}`;
       this.$http.get(api).then((response) => {
-        this.product = response.data.data;
-        this.product.num = 1;
-        this.isLoading = false;
+        vm.product = response.data.product;
+        vm.product.num = 1;
       });
     },
-    addtoCart(item, quantity = 1) {
-      this.status.loadingItem = item.id;
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping`;
-      const sendData = {
-        product: item.id,
-        quantity,
+    addtoCart(id, qty = 1) {
+      const vm = this;
+      const api = `${process.env.VUE_APP_APIPATH}/api/${
+        process.env.VUE_APP_CUSTOMPATH
+      }/cart`;
+      const cart = {
+        product_id: id,
+        qty,
       };
-      this.$http.post(api, sendData).then((response) => {
-        console.log(response);
-        this.status.loadingItem = '';
-        this.$bus.$emit('cart_num');
-        this.getItem();
-      }).catch(() => {
-        this.$bus.$emit('webmessage',
-          '此產品已經有加入購物車',
-          'warning');        
+      vm.status.loadingItem = id;
+      this.$http.post(api, { data: cart }).then(() => {
+        vm.status.loadingItem = '';
+        this.$bus.$emit('message:push');
       });
     },
   },

@@ -1,6 +1,5 @@
 <template>
   <div>
-    <loading :active.sync="isLoading" :zIndex="999"></loading>
     <div class="container container_mb">
       <div v-if="order === null" >
         <div class="alert alert-warning" role="alert">
@@ -24,19 +23,19 @@
                 <tbody>
                   <tr v-for="item in order.products" :key="item.id" >
                     <td class="align-middle">{{ item.product.title }}</td>
-                    <td class="align-middle">{{ item.quantity }}/{{ item.product.unit }}</td>
-                    <td class="align-middle text-right">{{ item.product.price }} </td>
+                    <td class="align-middle">{{ item.qty }}/{{ item.product.unit }}</td>
+                    <td class="align-middle text-right">{{ item.final_total }} </td>
                   </tr>
                 </tbody>
                 <tfoot>
-                  <tr class="check_order_total"  v-if="order.coupon">
-                    <td class="text-danger" style="font-size:1rem">已加入折扣:<br> {{ order.coupon.title }}</td>
+                  <tr class="check_order_total"  v-if="coupon">
+                    <td class="text-danger" style="font-size:1rem">已加入折扣:<br> {{ coupon }}</td>
                     <td class="text-right" >總計</td>
-                    <td class="text-right">{{ order.amount }} 元</td>
+                    <td class="text-right">{{ order.total }} 元</td>
                   </tr>
-                  <tr class="check_order_total" v-if="!order.coupon">
+                  <tr class="check_order_total" v-if="!coupon">
                     <td colspan="2" class="text-right" >總計</td>
-                    <td class="text-right">{{ order.amount }} 元</td>
+                    <td class="text-right">{{ order.total }} 元</td>
                   </tr>
                 </tfoot>
               </table>
@@ -66,7 +65,7 @@
                     <tr>
                       <th>付款狀態</th>
                       <td>
-                        <span v-if="!order.paid" class="text-danger">尚未付款</span>
+                        <span v-if="!order.is_paid" class="text-danger">尚未付款</span>
                         <span v-else class="text-success">付款完成</span>
                       </td>
                     </tr>
@@ -75,7 +74,7 @@
             </div>
 
           </div>
-          <div class="text-center col-12" v-if="order.paid === false">
+          <div class="text-center col-12" v-if="order.is_paid === false">
             <button class="btn btn-danger mb-3">確認付款去</button>
           </div>
 
@@ -93,41 +92,49 @@ export default {
       order: {
         user: {},
         products: [],
-        coupon: {},
-        amount: 0,
-        paid: false,
       },
-      isLoading: false,
+      coupon: [],
+      order_item: {},
+      is_loading: false,
     };
   },
   methods: {
     getOrder() {
       const vm = this;
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/orders/${vm.orderId}`;
-      vm.isLoading = true;
+      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/order/${vm.orderId}`;
+      vm.is_loading = true;
       this.$http.get(api).then((response) => {
-        this.order = response.data.data;
-        console.log(this.order);
-        vm.isLoading = false;
+        vm.order = response.data.order;
+        vm.products = vm.order.products;
+        vm.order.total = Math.round((vm.order.total * 10) / 10);
+        Object.keys(vm.products).forEach((item) => {
+          vm.products[item].final_total = Math.round((vm.products[item].final_total * 10) / 10);
+          if (vm.products[item].coupon) {
+            vm.coupon = vm.products[item].coupon.title;
+          } else {
+            vm.coupon = null;
+          }
+        });
+        vm.is_loading = false;
       });
     },
     payOrder() {
       const vm = this;
-      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/orders/${vm.orderId}/paying`;
-      vm.isLoading = true;
+      const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_CUSTOMPATH}/pay/${vm.orderId}`;
+      vm.is_loading = true;
       this.$http.post(api).then((response) => {
         // console.log(response);
         if (response.data.success) {
           vm.getOrder();
           vm.$router.push('/checksuccess');
         }
-        vm.isLoading = false;
+        vm.is_loading = false;
       });
     },
   },
   created() {
     this.orderId = this.$route.params.orderId;
-    console.log(this.orderId);
+    // console.log(this.orderId);
     this.getOrder();
   },
 };
