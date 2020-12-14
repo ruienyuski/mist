@@ -1,12 +1,12 @@
 <template>
   <div class="flexcontent">
-    <div class="container fixed-top" >
-      <Header></Header>
-    </div>
+    <Header class="container"></Header>
     <Toast />
-    <router-view>
-    </router-view>
-    <Footer></Footer>
+    <div class="content__footer">
+      <router-view>
+      </router-view>
+      <Footer></Footer>
+    </div>
   </div>
 </template>
 

@@ -76,6 +76,7 @@ const routes = [
 
 const router = new VueRouter({
   routes,
+  linkExactActiveClass: 'active',
 });
 
 export default router;

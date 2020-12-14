@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="container">
-      <div class="row justify-content-center">
+      <div class="row justify-content-center mb-5">
         <div class="col-lg-5 login_width">
           <form @submit.prevent="signin">
             <div class="card text-center login_bg">
