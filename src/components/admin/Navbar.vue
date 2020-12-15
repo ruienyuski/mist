@@ -1,7 +1,7 @@
 <template>
   <div>
     <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-      <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">Company name</a>
+      <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="/">回到網站前台</a>
       <button
         class="navbar-toggler position-absolute d-md-none collapsed"
         type="button"
@@ -13,15 +13,9 @@
       >
         <span class="navbar-toggler-icon"></span>
       </button>
-      <input
-        class="form-control form-control-dark w-100"
-        type="text"
-        placeholder="Search"
-        aria-label="Search"
-      />
       <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
-          <a class="nav-link" href="#" @click="signout()">Sign out</a>
+          <a class="nav-link" href="#" @click="signout()">登出</a>
         </li>
       </ul>
     </nav>
@@ -32,6 +26,8 @@
 export default {
   data() {
     return {
+      token:'',
+      checkSuccess:false,
     };
   },
   created() {

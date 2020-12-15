@@ -32,7 +32,8 @@
             <router-link class="nav-link" to="/checkpayment">訂單查詢</router-link>
           </li>
           <li class="nav-item desktop">
-            <router-link class="nav-link" to="/login">後台登入</router-link>
+            <router-link class="nav-link" to="/admin" v-if="token!==''">後台</router-link>
+            <router-link class="nav-link" to="/login" v-else>後台登入</router-link>
           </li>
         </ul>
       </div>
@@ -59,7 +60,38 @@ export default {
   components: {
     CartNum,
   },
+  data() {
+    return {
+      token:'',
+      checkSuccess:false,
+    };
+  },
+  created() {
+    this.checkLogin();
+  },  
   methods: {
+    checkLogin() {
+      this.token = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*=\s*([^;]*).*$)|^.*$/, '$1');
+
+      // Axios 預設值
+      this.$http.defaults.headers.common.Authorization = `Bearer ${this.token}`;
+
+      const api = `${process.env.VUE_APP_APIPATH}/api/auth/check`;
+
+      // eslint-disable-next-line
+      this.$http.post(api, { 'api_token': this.token }).then((response) => {
+        // 登入沒有問題
+        if (response.data.success) {
+          this.checkSuccess = true;
+        }
+      }).catch((res) => {
+        // 驗證失敗，轉回登入頁
+        this.$bus.$emit('webmessage',
+          `${res.data.message}`,
+          'danger');   
+        this.$router.push('/login');
+      });
+    },    
     top() {
       $('html,body').animate(
       // eslint-disable-next-line
