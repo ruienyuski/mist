@@ -89,7 +89,7 @@ export default {
       }).catch((res) => {
         // 驗證失敗，轉回登入頁
         this.$bus.$emit('webmessage',
-          `${res.data}`,
+          `登入失敗，請重新登入`,
           'danger');   
         this.$router.push('/login');
       });
