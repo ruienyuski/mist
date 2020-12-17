@@ -138,6 +138,12 @@
                 </div>
                 <hr>
                 <div class="form-group">
+                  <label for="optionsTitle">活動標題</label>
+                  <input type="text" class="form-control" id="optionsTitle"
+                    placeholder="請輸入內容" v-model="tempProduct.options.title">
+                </div>
+                <hr>
+                <div class="form-group">
                   <label for="content">說明內容</label>
                   <textarea type="text" class="form-control" id="content"
                     placeholder="請輸入產品說明內容" v-model="tempProduct.content"></textarea>
@@ -211,6 +217,9 @@ export default {
       },
       tempProduct: {
         imageUrl: [],
+        options: {
+          title: '',
+        }
       },
       fileUploading: false,
       isLoading: false,
@@ -226,7 +235,6 @@ export default {
       this.isLoading = true;
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/products?page=${page}`;
       this.$http.get(api).then((res) => {
-        console.log(res);
         this.products = res.data.data;
         this.pagination = res.data.meta.pagination;
         this.isLoading = false;
@@ -237,6 +245,7 @@ export default {
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/product/${id}`;
       this.$http.get(api).then((response) => {
         this.tempProduct = response.data.data;
+        this.tempProduct.options = response.data.data.options || {};
         $('#productModal').modal('show');
         this.isLoading = false;
       });
@@ -247,6 +256,9 @@ export default {
           this.modaltitle = '新增產品';
           this.tempProduct = {
             imageUrl: [],
+            options: {
+              title: '',
+            }            
           };
           this.isNew = true;
           $('#productModal').modal('show');

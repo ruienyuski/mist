@@ -7,13 +7,12 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: '/',
-    name: 'index',
     component: Layout,
     children: [
       {
         path: '',
-        name: 'Home',
-        component: () => import('../views/frontPage/Home.vue'),
+        name: 'Index',
+        component: () => import('../views/frontPage/Index.vue'),
       },
       {
         path: '/login',
@@ -25,6 +24,11 @@ const routes = [
         name: 'Products',
         component: () => import('../views/frontPage/Products.vue'),
       },
+      {
+        path: 'favlist',
+        name: 'Favlist',
+        component: () => import('../views/frontPage/Fav.vue'),
+      },      
       {
         path: 'checkpayment',
         name: 'CheckPayment',
@@ -55,7 +59,6 @@ const routes = [
 
   {
     path: '/admin',
-    name: 'Dashaboard',
     component: () => import('../components/admin/Dashaboard.vue'),
     children: [
       {

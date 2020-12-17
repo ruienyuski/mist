@@ -1,6 +1,8 @@
 <template>
   <div class="flexcontent">
-    <Header class="container"></Header>
+    <div class="container">
+      <Header></Header>
+    </div>
     <Toast />
     <div class="content__footer">
       <router-view>

@@ -49,7 +49,18 @@
           </div>
 
           <div class="col-md-8">
-            <img class="img-fluid w-100 mb-5" :src="product.imageUrl">
+            <div class="relative">
+              <span class="product_like" @click.prevent="setFav(product.id)">
+                <i class="material-icons md-32 text-danger">
+                  {{ favState(product.id) }}
+                </i>
+              </span>
+            </div>
+            <div
+              class="bg-cover product_card_img w-100 mb-5"
+              :style="`background-image: url(${product.imageUrl})`"
+            ></div>        
+            <!-- <img class="img-fluid w-100 mb-5" :src="product.imageUrl"> -->
             <h3>{{product.description}}</h3>
             <p class="product_Text">{{product.content}}</p>
           </div>
@@ -73,6 +84,7 @@ export default {
         loadingItem: '',
       },
       isLoading: false,
+      favorited: JSON.parse(localStorage.getItem('favorite')) || [],
     };
   },
   methods: {
@@ -105,6 +117,31 @@ export default {
           'warning');        
       });
     },
+    setFav(id) {
+      const vm = this;
+      let index = vm.favorited.findIndex((el) => {
+        return id === el
+      });
+      if(vm.favorited.indexOf(id) < 0) {
+        vm.favorited.push(id);
+      } else {
+        console.log(vm.favorited)
+        vm.favorited.splice(index, 1);
+      };
+      localStorage.setItem('favorite', JSON.stringify(vm.favorited));
+    }    
+  },
+  computed: {
+    favState() {
+      return function(id) {
+        const vm = this;
+        if(vm.favorited.indexOf(id) > -1) {
+          return 'favorite'
+        } else {
+          return 'favorite_border'
+        }  
+      }
+    },    
   },
   created() {
     this.getItem();

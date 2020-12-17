@@ -29,12 +29,11 @@
               <div class="product_sale_item">
                 <div class="card card_size">
                   <div class="relative">
-                    <!-- <span class="product_today">本日精選</span> -->
-                    <!-- <span class="product_like">
-                      <i class="material-icons text-danger">
-                        favorite_border
+                    <span class="product_like" @click.prevent="setFav(item.id)">
+                      <i class="material-icons md-32 text-danger">
+                        {{ favState(item.id) }}
                       </i>
-                    </span>-->
+                    </span>
                   </div>
                   <router-link :to="{name:'ProductDetail',params:{id:item.id}}">
                     <div
@@ -114,113 +113,6 @@
         </div>
       </div>
     </div>
-
-    <!-- <div class="px-4">
-      <div class="row mt-4 justify-content-center">
-        <div class="col-md-4 mb-4" v-for="item in products" :key="item.id">
-          <div class="card">
-            <img :src="item.imageUrl[0]" class="card-img-top" alt="" />
-            <div class="card-body">
-              <h5 class="card-title">{{ item.title }}</h5>
-              <p class="card-text">{{ item.content }}</p>
-            </div>
-            <div class="card-footer d-flex">
-              <button
-                type="button"
-                class="btn btn-outline-secondary"
-                data-toggle="modal"
-                @click="getProductDetails(item.id)"
-              >
-                查看更多
-              </button>
-              <button
-                type="button"
-                class="btn btn-outline-danger ml-auto"
-                @click="addToCart(item, item.num)"
-              >
-                <i
-                  v-if="item.id === status.loadingItem"
-                  class="fas fa-spinner fa-spin"
-                ></i>
-                加到購物車
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div> -->
-    <!-- 產品 Modal -->
-    <!-- <div
-      id="productdetailModal"
-      class="modal fade"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 id="exampleModalLabel" class="modal-title">
-              {{ tempProduct.title }}
-            </h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <img :src="tempProduct.image" class="img-fluid" alt />
-            <blockquote class="blockquote mt-3">
-              <p class="mb-0" v-html="tempProduct.content"></p>
-              <footer class="blockquote-footer text-right">
-                {{ tempProduct.description }}
-              </footer>
-            </blockquote>
-            <div class="d-flex justify-content-between align-items-baseline">
-              <div v-if="!tempProduct.price" class="h4">
-                {{ tempProduct.origin_price }} 元
-              </div>
-              <del v-if="tempProduct.price" class="h6"
-                >原價 {{ tempProduct.origin_price }} 元</del
-              >
-              <div v-if="tempProduct.price" class="h4">
-                現在只要 {{ tempProduct.price }} 元
-              </div>
-            </div>
-            <select v-model="tempProduct.num" name class="form-control mt-3">
-              <option value="0" disabled selected>
-                請選擇數量
-              </option>
-              <option v-for="num in 10" :key="num" :value="num">
-                選購 {{ num }} {{ tempProduct.unit }}
-              </option>
-            </select>
-          </div>
-          <div class="modal-footer">
-            <div v-if="tempProduct.num" class="text-muted text-nowrap mr-3">
-              小計
-              <strong>{{ tempProduct.num * tempProduct.price }}</strong> 元
-            </div>
-            <button
-              type="button"
-              class="btn btn-primary"
-              @click="addToCart(tempProduct, tempProduct.num)"
-            >
-              <i
-                v-if="tempProduct.id === status.loadingItem"
-                class="fas fa-spinner fa-spin"
-              ></i>
-              加到購物車
-            </button>
-          </div>
-        </div>
-      </div>
-    </div> -->
   </div>
 </template>
 <script>
@@ -234,7 +126,6 @@ export default {
       has_next: false,
       pagenum: [],
       visibility: 'all',
-
       products: [],
       status: {
         loadingItem: '',
@@ -243,6 +134,7 @@ export default {
         num: 0,
       },
       isLoading: false,
+      favorited: JSON.parse(localStorage.getItem('favorite')) || [],
     };
   },
   methods: {
@@ -284,7 +176,6 @@ export default {
     getCart() {
       this.isLoading = true;
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping`;
-      // console.log(api);
       this.$http.get(api).then((response) => {
         // eslint-disable-next-line
         this.cart = response.data.data;
@@ -294,6 +185,18 @@ export default {
         });
       });
     },
+    setFav(id) {
+      const vm = this;
+      let index = vm.favorited.findIndex((el) => {
+        return id === el
+      });
+      if(vm.favorited.indexOf(id) < 0) {
+        vm.favorited.push(id);
+      } else {
+        vm.favorited.splice(index, 1);
+      };
+      localStorage.setItem('favorite', JSON.stringify(vm.favorited));
+    }
   },
   computed: {
     filterData() {
@@ -304,6 +207,7 @@ export default {
       const categoryItem = [];
       items.forEach((item) => {
         if (vm.visibility === item.category) {
+          this.currentpage = 0;
           categoryItem.push(item);
         } else if (vm.visibility === 'all') {
           categoryItem.push(item);
@@ -319,7 +223,6 @@ export default {
       });
       return newData;
     },
-
     filterCategory() {
       const vm = this;
       const list = [];
@@ -335,6 +238,16 @@ export default {
         return arr.indexOf(item) === i;
       }); // filter category norepeat
       return category;
+    },
+    favState() {
+      return function(id) {
+        const vm = this;
+        if(vm.favorited.indexOf(id) > -1) {
+          return 'favorite'
+        } else {
+          return 'favorite_border'
+        }  
+      }
     },
   },
   created() {

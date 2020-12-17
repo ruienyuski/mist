@@ -7,31 +7,6 @@
             <div class="card text-center login_bg">
               <div class="card-body">
                 <h5 class="card-title">後台登入</h5>
-                <!-- <div class="mobile mobile_social_btn_bg mb-5">
-                  <div class="btn-group  social_btn">
-                    <button type="button" class="btn mx-1 btn_bg">
-                      <img
-                      src="@/assets/static/images/logo_img/ic-facebook-logotype.svg"
-                      alt=""
-                      class="social_icon">
-
-                    </button>
-                    <button type="button" class="btn mx-1 btn_bg">
-                      <img
-                      src="@/assets/static/images/logo_img/ic-google.svg"
-                      alt=""
-                      class="social_icon">
-
-                    </button>
-                    <button type="button" class="btn mx-1 btn_bg">
-                      <img
-                      src="@/assets/static/images/logo_img/ic-yahoo.svg"
-                      alt=""
-                      class="social_icon">
-
-                    </button>
-                  </div>
-                </div> -->
                 <div class="form-row justify-content-center">
                   <div class="form-group col-lg-11 col-10 mb-0">
                     <div class="relative input_icon">

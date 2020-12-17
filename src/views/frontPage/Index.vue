@@ -94,7 +94,7 @@
         >
           <div class="card">
             <div class="relative">
-              <span class="product_home_list product_today">{{item.category}}</span>
+              <span class="product_home_list product_today">{{item.options.title}}</span>
               <!-- <span class="product_like">
                 <i class="material-icons">
                   favorite_border
@@ -139,7 +139,7 @@
         v-for="item in filterData.hot" :key="item.id">
           <div class="card">
             <div class="relative">
-              <span class="product_home_list bg-danger">{{item.category}}</span>
+              <span class="product_home_list bg-danger">{{item.options.title}}</span>
               <!-- <span class="product_like">
                 <i class="material-icons">
                   favorite_border
@@ -186,7 +186,7 @@
         >
           <div class="card">
             <div class="relative">
-              <span class="product_home_list product_NEW">{{item.category}}</span>
+              <span class="product_home_list product_NEW">{{item.options.title}}</span>
               <!-- <span class="product_like">
                 <i class="material-icons">
                   favorite_border
@@ -249,9 +249,7 @@ export default {
       const vm = this;
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/products`;
       this.$http.get(api).then((response) => {
-        console.log(response);
         vm.products = response.data.data;
-        console.log(vm.products);
       });
     },
   },
@@ -263,11 +261,13 @@ export default {
       const today = [];
       const newProduct = [];
       items.forEach((item) => {
-        if (item.category === '本日精選') {
+        if(!item.options) {
+          return;
+        }else if (item.options.title === '本日精選') {
           today.push(item);
-        } else if (item.category === '人氣推薦') {
+        } else if (item.options.title === '人氣推薦') {
           hot.push(item);
-        } else if (item.category === '新品上市') {
+        } else if (item.options.title === '新品上市') {
           newProduct.push(item);
         }
       });
