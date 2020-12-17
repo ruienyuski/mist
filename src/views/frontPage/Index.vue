@@ -1,5 +1,6 @@
 <template>
   <div>
+    <loading :active.sync="isLoading" :zIndex="999"></loading>
     <!-- swiper 測試 -->
     <!-- <div class="swiper-container banner-img">
       <div class="swiper-wrapper">
@@ -242,14 +243,17 @@ export default {
     return {
       products: [],
       category: [],
+      isLoading: false,
     };
   },
   methods: {
     getProduct() {
       const vm = this;
+      vm.isLoading = true;
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/products`;
       this.$http.get(api).then((response) => {
         vm.products = response.data.data;
+        vm.isLoading = false;
       });
     },
   },

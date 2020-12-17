@@ -88,9 +88,8 @@ export default {
         console.log(response)
       }).catch((res) => {
         // 驗證失敗，轉回登入頁
-        console.log(res)
         this.$bus.$emit('webmessage',
-          `${res.data.message}`,
+          `${res.data}`,
           'danger');   
         this.$router.push('/login');
       });

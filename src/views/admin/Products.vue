@@ -285,6 +285,9 @@ export default {
         api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/product/${this.tempProduct.id}`;
         status = '更新產品成功';
       }
+      this.$set(this.tempProduct, 'options', {
+        title: this.tempProduct.options.title,
+      })      
       this.$http[httpMethod](api, this.tempProduct).then((res) => {
         this.$bus.$emit('webmessage',
           status,
