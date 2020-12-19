@@ -18,7 +18,6 @@ export default {
   methods: {
     pageItem(num) {
       this.$emit('updatepage', num);
-      console.log(this.pages, num);
     },
   },
   created() {

@@ -211,7 +211,6 @@ export default {
         status = '更新優惠卷成功';
       }
       this.tempCoupons.deadline_at = `${this.due_date} ${this.due_time}`;
-      console.log(this.tempCoupons.deadline_at);
       this.$http[httpMethod](api, vm.tempCoupons).then((response) => {
         $('#CouponsModal').modal('hide');
         this.$bus.$emit('webmessage',

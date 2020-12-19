@@ -107,7 +107,6 @@ export default {
         quantity,
       };
       this.$http.post(api, sendData).then((response) => {
-        console.log(response);
         this.status.loadingItem = '';
         this.$bus.$emit('cart_num');
         this.getItem();
@@ -125,7 +124,6 @@ export default {
       if(vm.favorited.indexOf(id) < 0) {
         vm.favorited.push(id);
       } else {
-        console.log(vm.favorited)
         vm.favorited.splice(index, 1);
       };
       localStorage.setItem('favorite', JSON.stringify(vm.favorited));

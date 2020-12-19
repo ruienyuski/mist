@@ -153,7 +153,6 @@ export default {
           vm.$bus.$emit('cart_num');
           vm.getData();
         }).catch((err) => {
-          console.log(err)
           vm.status.loadingItem = '';
           vm.$bus.$emit('webmessage',
             '此產品已經加入購物車',

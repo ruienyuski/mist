@@ -282,9 +282,7 @@ export default {
     getCart() {
       this.isLoading = true;
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping`;
-      // console.log(api)
       this.$http.get(api).then((response) => {
-        // console.log(response);
         this.cart = response.data.data;
         this.cartTotal = 0;
         this.cart.forEach((item) => {
@@ -296,7 +294,6 @@ export default {
     removeCartItem(id) {
       this.isLoading = true;
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/shopping/${id}`;
-      console.log(api);
       this.$http.delete(api).then(() => {
         this.$bus.$emit('cart_num');
         this.getCart();

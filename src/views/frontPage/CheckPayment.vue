@@ -52,7 +52,6 @@ export default {
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/orders/${vm.orderId}`;
       vm.is_loading = true;
       this.$http.get(api).then((response) => {
-        console.log(response);
         vm.$router.push(`/payment/${vm.orderId}`);
         vm.is_loading = false;
       }).catch((error) => {

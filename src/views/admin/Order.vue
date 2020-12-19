@@ -94,7 +94,6 @@ export default {
       this.isLoading = true;
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/admin/ec/orders?page=${page}`;
       this.$http.get(api).then((res) => {
-        console.log(res);
         this.orders = res.data.data;
         this.pagination = res.data.meta.pagination;
         this.isLoading = false;
