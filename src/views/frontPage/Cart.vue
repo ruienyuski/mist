@@ -45,7 +45,7 @@
                       </button>
                     </div>
                     <input
-                      id="inlineFormInputGroupUsername"
+                      :id="item.product.id"
                       type="text"
                       class="form-control text-center"
                       :value="item.quantity"
@@ -91,7 +91,7 @@
               />
               <div class="input-group-append">
                 <button
-                  class="btn btn-outline-warning"
+                  class="btn btn-secondary"
                   type="button"
                   id="button-addon"
                   @click="addCouponCode"
@@ -148,7 +148,7 @@
       </div>
     </div>
     <div class="my-5 row justify-content-center" v-if="cart.length !== 0">
-      <validation-observer v-slot="{ invalid }" class="col-md-6">
+      <validation-observer v-slot="{ invalid }" class="col-md-6 col-10">
         <form @submit.prevent="createOrder">
           <div class="form-group">
             <validation-provider v-slot="{ errors, classes }" rules="required">

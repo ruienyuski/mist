@@ -45,7 +45,6 @@ export default {
       // eslint-disable-next-line
       this.$http.post(api, { 'api_token': this.token }).then((response) => {
         // 登入沒有問題
-        console.log(response);
         if (response.data.success) {
           this.checkSuccess = true;
         }

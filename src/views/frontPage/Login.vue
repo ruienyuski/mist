@@ -68,7 +68,6 @@ export default {
           token: response.data.token,
           expires: response.data.expires,
         };
-        console.log(response.data.token);
         // 寫入 cookie token
         // expires 設置有效時間
         document.cookie = `token=${data.token};expires=${new Date(data.expired * 1000)}; path=/`;

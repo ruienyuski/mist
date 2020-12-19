@@ -28,14 +28,14 @@
           <li class="nav-item">
             <router-link class="nav-link" to="/products">商品</router-link>
           </li>
-          <li class="nav-item">
+          <li class="nav-item desktop">
             <router-link class="nav-link" to="/favlist">收藏清單</router-link>
           </li>          
           <li class="nav-item">
             <router-link class="nav-link" to="/checkpayment">訂單查詢</router-link>
           </li>
           <li class="nav-item desktop">
-            <router-link class="nav-link" to="/admin" v-if="token!==''">後台</router-link>
+            <router-link class="nav-link" to="/admin" v-if="checkSuccess">後台</router-link>
             <router-link class="nav-link" to="/login" v-else>後台登入</router-link>
           </li>             
         </ul>
@@ -65,7 +65,6 @@ export default {
   },
   data() {
     return {
-      token:'',
       checkSuccess:false,
     };
   },
@@ -74,25 +73,18 @@ export default {
   },  
   methods: {
     checkLogin() {
-      if(this.token !== '') {return}
-      this.token = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*=\s*([^;]*).*$)|^.*$/, '$1');
+      let token = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*=\s*([^;]*).*$)|^.*$/, '$1');
+      if(token === '') {return}
       // Axios 預設值
-      this.$http.defaults.headers.common.Authorization = `Bearer ${this.token}`;
+      this.$http.defaults.headers.common.Authorization = `Bearer ${token}`;
       const api = `${process.env.VUE_APP_APIPATH}/api/auth/check`;
       // eslint-disable-next-line
-      this.$http.post(api, { 'api_token': this.token }).then((response) => {
+      this.$http.post(api, { 'api_token': token }).then((response) => {
         // 登入沒有問題
         if (response.data.success) {
           this.checkSuccess = true;
         }
-        console.log(response)
-      }).catch((res) => {
-        // 驗證失敗，轉回登入頁
-        this.$bus.$emit('webmessage',
-          `登入失敗，請重新登入`,
-          'danger');   
-        this.$router.push('/login');
-      });
+      })
     },    
     top() {
       $('html,body').animate(
