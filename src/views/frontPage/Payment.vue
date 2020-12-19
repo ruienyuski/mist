@@ -107,7 +107,6 @@ export default {
       vm.isLoading = true;
       this.$http.get(api).then((response) => {
         this.order = response.data.data;
-        console.log(this.order);
         vm.isLoading = false;
       });
     },
@@ -128,7 +127,6 @@ export default {
   },
   created() {
     this.orderId = this.$route.params.orderId;
-    console.log(this.orderId);
     this.getOrder();
   },
 };
