@@ -10,7 +10,7 @@
           </div>
         </div>
       </div>
-      <form v-else>
+      <form @submit.prevent = "payOrder" v-else>
         <div class=" row justify-content-center">
           <div class="check_order_width col-md-8 ">
             <div class=" p-3 text-center check_list_title">訂單內容</div>
@@ -76,7 +76,7 @@
 
           </div>
           <div class="text-center col-12" v-if="order.paid === false">
-            <button class="btn btn-danger mb-3" @click="payOrder">確認付款去</button>
+            <button class="btn btn-danger mb-3">確認付款去</button>
           </div>
 
         </div>
@@ -107,6 +107,7 @@ export default {
       vm.isLoading = true;
       this.$http.get(api).then((response) => {
         this.order = response.data.data;
+        console.log(this.order);
         vm.isLoading = false;
       });
     },
@@ -115,15 +116,19 @@ export default {
       const api = `${process.env.VUE_APP_APIPATH}/api/${process.env.VUE_APP_UUID}/ec/orders/${vm.orderId}/paying`;
       vm.isLoading = true;
       this.$http.post(api).then((response) => {
-        if (response.data.success) {
-          vm.getOrder();
-        }
+        vm.getOrder();
+        vm.$router.push('/checksuccess');
         vm.isLoading = false;
+      }).catch(() => {
+        this.$bus.$emit('webmessage',
+          '付款確認失敗',
+          'danger');          
       });
     },
   },
   created() {
     this.orderId = this.$route.params.orderId;
+    console.log(this.orderId);
     this.getOrder();
   },
 };

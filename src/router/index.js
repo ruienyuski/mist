@@ -33,7 +33,12 @@ const routes = [
         path: 'checkpayment',
         name: 'CheckPayment',
         component: () => import('../views/frontPage/CheckPayment.vue'),
-      },     
+      },
+      {
+        path: 'checksuccess',
+        name: 'CheckSuccess',
+        component: () => import('../views/frontPage/CheckSuccess.vue'),
+      },
       {
         path: 'payment/:orderId',
         name: 'Payment',
