@@ -1,0 +1,1 @@
+import{A as o,i as r,r as i,a as c}from"./index-a98e8c24.js";const d=o("products",()=>{const t=r("emitter"),e=i([]);return{getData:()=>{t.emit("isLoading",!0);const a="/apipath/products/all";c.get(a).then(s=>{e.value=s.data.products,t.emit("isLoading",!1)})},products:e}});export{d as u};
