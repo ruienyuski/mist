@@ -25,7 +25,7 @@ const orderId = ref('')
       })
      const getOrder = () => {
       emitter.emit('isLoading', true)
-      const api = `/apipath/order/${orderId.value}`
+      const api = `${import.meta.env.VITE_APP_URL}/order/${orderId.value}`
       axios.get(api).then((res) => {
         const coupondata = Object.values(res?.data?.order?.products)[0].coupon
         if(!coupondata) {
@@ -43,7 +43,7 @@ const orderId = ref('')
     }
 
     const payOrder = () => {
-      const api = `/apipath/pay/${orderId.value}`
+      const api = `${import.meta.env.VITE_APP_URL}/pay/${orderId.value}`
       emitter.emit('isLoading', true)
       axios.post(api).then(() => {
         getOrder()

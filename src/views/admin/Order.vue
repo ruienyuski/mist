@@ -54,7 +54,7 @@ const getDetails = (item) => {
 }
 
 const delData = () => {
-      const url = `/apipath/admin/order/${tempOrder.value.id}`
+      const url = `${import.meta.env.VITE_APP_URL}/admin/order/${tempOrder.value.id}`
       axios.delete(url).then(() => {
         emitter.emit("webmessage",'此筆資料已經刪除', 'success')
         getOrder()
@@ -78,7 +78,7 @@ const openModal = (status, item) => {
 }
 
 const updataItem = (item) => {
-  const url = `/apipath/admin/order/${item.id}`
+  const url = `${import.meta.env.VITE_APP_URL}/admin/order/${item.id}`
 
   axios.put(url, {data:item}).then((res) => {
     emitter.emit('webmessage', res.data.message, 'success')

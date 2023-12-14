@@ -36,7 +36,7 @@ onMounted(() => {
 
 const removeCartItem = (id) => {
   emitter.emit('isLoading', true)
-  const api = `/apipath/cart/${id}`
+  const api = `${import.meta.env.VITE_APP_URL}/cart/${id}`
   axios.delete(api).then(() => {
     Cartstore.getCart()
     emitter.emit('cart_num')
@@ -49,7 +49,7 @@ const quantityUpdata = (item, quantity) => {
   if (quantity < 0) {
     return
   }
-  const api = `/apipath/cart/${item.id}`
+  const api = `${import.meta.env.VITE_APP_URL}/cart/${item.id}`
   const cart = {
     product_id: item.product_id,
     qty: quantity
@@ -61,7 +61,7 @@ const quantityUpdata = (item, quantity) => {
 }
 const removeAllCartItem = () => {
   emitter.emit('isLoading', true)
-  const api = `/apipath/carts`
+  const api = `${import.meta.env.VITE_APP_URL}/carts`
   axios.delete(api).then(() => {
     Cartstore.getCart()
     emitter.emit('cart_num')
@@ -81,7 +81,7 @@ const createOrder = (value) => {
     data:form.value
   }
   emitter.emit('isLoading', true)
-      const api = `/apipath/order`
+      const api = `${import.meta.env.VITE_APP_URL}/order`
       axios.post(api, order).then((res) => {
         if(res.data.success) {
           emitter.emit('cart_num')
@@ -92,7 +92,7 @@ const createOrder = (value) => {
       })
 }
 const addCouponCode = () => {
-  const api = `/apipath/coupon`
+  const api = `${import.meta.env.VITE_APP_URL}/coupon`
   emitter.emit('isLoading', true)
   axios.post(api, { data: {code: coupon_code.value} }).then((res) => {
     coupon.value = res.data

@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
 
-import { ref, watch, computed } from 'vue'
+import { ref, watch } from 'vue'
 import { useModal } from '../../mixin/useModal.js'
 import { useDate } from '../../mixin/useDate.js'
 const props = defineProps(['coupon', 'title'])

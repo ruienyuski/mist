@@ -14,7 +14,7 @@ onMounted(() => {
 })
 
 const getCartNum = (num) => {
-      const api = `/apipath/cart`;
+      const api = `${import.meta.env.VITE_APP_URL}/cart`;
       axios.get(api).then((res) => {
         nowNum.value = res.data.data.carts.length;
         message.value.push({ num });

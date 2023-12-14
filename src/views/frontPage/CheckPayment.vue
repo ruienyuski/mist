@@ -14,7 +14,7 @@ onMounted(() => {
 
 const nextStep = () => {
     emitter.emit('isLoading', true)
-    const api = `/apipath/order/${orderId.value}`
+    const api = `${import.meta.env.VITE_APP_URL}/order/${orderId.value}`
     axios.get(api).then(() => {
         router.push(`/payment/${orderId.value}`)
         emitter.emit('isLoading', false)

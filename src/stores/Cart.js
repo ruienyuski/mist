@@ -10,7 +10,7 @@ export const useCartStore = defineStore('cart', () => {
     const loadingItem = ref('')
     const getCart = () => {
         emitter.emit("isLoading",true)
-          const api = `/apipath/cart`
+          const api = `${import.meta.env.VITE_APP_URL}/cart`
           axios.get(api).then((res) => {
             // eslint-disable-next-line
             cart.value = res.data.data.carts
@@ -22,7 +22,7 @@ export const useCartStore = defineStore('cart', () => {
 
         const addToCart = (item, quantity = 1) => {
             loadingItem.value = item.id
-            const api = `/apipath/cart`
+            const api = `${import.meta.env.VITE_APP_URL}/cart`
             const sendData = {
               product_id: item.id,
               qty:quantity,

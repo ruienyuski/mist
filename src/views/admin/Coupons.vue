@@ -21,9 +21,7 @@ onMounted(() => {
   getCoupons()
 })
 const getCoupons = (page = 1) => {
-      const api = `${import.meta.env.VITE_APIPATH}/v2/api/${
-    import.meta.env.VITE_UUID
-  }/admin/coupons?page=${page}`
+      const api = `${import.meta.env.VITE_APP_URL}/admin/coupons?page=${page}`
       emitter.emit('isLoading', true)
       axios.get(api).then((res) => {
         coupons.value = res.data.coupons
@@ -32,7 +30,7 @@ const getCoupons = (page = 1) => {
       })
     }
     const delData = () => {
-      const url = `/apipath/admin/coupon/${tempCoupon.value.id}`
+      const url = `${import.meta.env.VITE_APP_URL}/admin/coupon/${tempCoupon.value.id}`
       axios.delete(url).then(() => {
         emitter.emit("webmessage",'此筆資料已經刪除', 'success')
         getCoupons()

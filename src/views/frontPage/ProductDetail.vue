@@ -22,7 +22,7 @@ onMounted(() => {
 const getItem = () => {
       // eslint-disable-next-line
       id.value = route.params.id
-      const api = `/apipath/product/${id.value}`
+      const api = `${import.meta.env.VITE_APP_URL}/product/${id.value}`
       axios.get(api).then((res) => {
         product.value = res.data.product
       })

@@ -46,7 +46,7 @@ const uploadFile = () => {
   const uploadedFile = file.value.files[0]
   const formData = new FormData()
   formData.append('file', uploadedFile)
-  const url = `/apipath/admin/upload`
+  const url = `${import.meta.env.VITE_APP_URL}/admin/upload`
   fileUploading.value = true
   axios
     .post(url, formData, {

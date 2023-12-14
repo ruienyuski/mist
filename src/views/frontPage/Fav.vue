@@ -24,7 +24,7 @@ const removeAllFavItem = () => {
       localStorage.setItem('favorite', JSON.stringify(Favstore.favorited))
     }
 const addAllFavItem = () => {
-      const api = `/apipath/cart`
+      const api = `${import.meta.env.VITE_APP_URL}/cart`
 
       Favstore.favorited.forEach((id) => {
         const sendData = {

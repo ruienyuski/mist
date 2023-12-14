@@ -22,7 +22,7 @@ onMounted(() => {
 
 const getProduct = (page = 1) => {
   emitter.emit("isLoading",true)
-  const api = `${import.meta.env.VITE_APIPATH}/v2/api/${import.meta.env.VITE_UUID}/admin/products?page=${page}`
+  const api = `${import.meta.env.VITE_APP_URL}/admin/products?page=${page}`
   axios.get(api).then((res) => {
     products.value = res.data.products
     pagination.value = res.data.pagination
@@ -36,7 +36,7 @@ const getDetails = (item) => {
   openProduct.value.show()
 }
 const delData = (item) => {
-      const url = `${import.meta.env.VITE_APIPATH}/v2/api/${import.meta.env.VITE_UUID}/admin/product/${item.id}`
+      const url = `${import.meta.env.VITE_APP_URL}/admin/product/${item.id}`
       axios.delete(url).then(() => {
         emitter.emit("webmessage",'此筆資料已經刪除', 'success')
         getProduct()
@@ -69,13 +69,13 @@ const openModal = (status, item) => {
 }
 
 const updataItem = (item) => {
-  let api = `${import.meta.env.VITE_APIPATH}/v2/api/${import.meta.env.VITE_UUID}/admin/product`
+  let api = `${import.meta.env.VITE_APP_URL}/admin/product`
   let httpMethod = 'post'
   emitter.emit("isLoading",true)
     let status = '新增產品成功'
   if (!isNew.value) {
     httpMethod = 'put'
-    api = `${import.meta.env.VITE_APIPATH}/v2/api/${import.meta.env.VITE_UUID}/admin/product/${
+    api = `${import.meta.env.VITE_APP_URL}/admin/product/${
       item.id
     }`
     status = '更新產品成功'
@@ -94,7 +94,7 @@ const updataItem = (item) => {
 }
 
 const setProductPaid = (item) => {
-  const url = `${import.meta.env.VITE_APIPATH}/v2/api/${import.meta.env.VITE_UUID}/admin/product/${
+  const url = `${import.meta.env.VITE_APP_URL}/admin/product/${
     item.id
   }`
   tempProduct.value = {...item}
