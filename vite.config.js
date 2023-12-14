@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [
     vue(),
   ],
-  // base: '/mist/',
+  base: '/mist/',
   // server: {
   //   proxy: {
   //     '/apipath': {
