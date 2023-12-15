@@ -10,7 +10,7 @@ const { checkSuccess } = useToken()
   <header>
     <nav class="navbar navbar-expand-lg navbar-light bg-white py-4">
       <button
-        class="navbar-toggler hamger"
+        class="navbar-toggler border-0"
         type="button"
         data-bs-toggle="collapse"
         data-bs-target="#navbarNav"
@@ -21,7 +21,6 @@ const { checkSuccess } = useToken()
         <i class="material-icons">dehaze</i>
       </button>
       <router-link class="navbar-brand Logo" to="/"></router-link>
-      <div class="top mobile" @click="top">top</div>
       <router-link class="mobile ipad" to="/cart">
         <button class="btn btn-sm btn-cart">
           <i class="material-icons mobile ipad">shopping_cart</i>
