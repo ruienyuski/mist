@@ -1,0 +1,1 @@
+import{A as s,i as r,r as i,a as c}from"./index-47672147.js";const p=s("products",()=>{const t=r("emitter"),e=i([]);return{getData:()=>{t.emit("isLoading",!0);const a="https://ec-course-api.hexschool.io/v2/api/207a7721/products/all";c.get(a).then(o=>{e.value=o.data.products,t.emit("isLoading",!1)})},products:e}});export{p as u};
