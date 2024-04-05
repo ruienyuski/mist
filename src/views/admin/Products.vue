@@ -2,6 +2,7 @@
 <script setup>
 import { ref, onMounted, inject } from 'vue'
 import axios from 'axios'
+import * as XLSX from 'xlsx'
 import Pagination from '../../components/admin/Pagination.vue'
 import ProductModal from '../../components/admin/ProductModal.vue'
 import DeleteModal from '../../components/admin/DeleteModal.vue'
@@ -14,7 +15,8 @@ const modaltitle = ref('')
 const isNew = ref(false)
 const openProduct = ref(null)
 const openDelete = ref(null)
-
+const excelData = ref([])
+const fileInput = ref(null)
 onMounted(() => {
   getProduct()
 })
@@ -102,19 +104,101 @@ const setProductPaid = (item) => {
     getProduct()
   })
 }
+const handleFileChange = (event) => {
+  fileInput.value = event.target.files[0] 
+  if (fileInput.value) {
+    readFile()
+  }
+}
 
+const readFile = () => {
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        const data = new Uint8Array(event.target.result)
+        const workbook = XLSX.read(data, { type: 'array' })
+        const sheet = workbook.Sheets[workbook.SheetNames[0]]
+        const temp = XLSX.utils.sheet_to_json(sheet)
+        temp.forEach((newProduct) => {
+          const existingProduct = products.value.find(oldProduct => oldProduct.title === newProduct.title)
+          if (!existingProduct) {
+            newProduct.id = ''
+            newProduct.is_enabled = 0
+            excelData.value.push(newProduct)
+          } else {
+            emitter.emit("webmessage",`錯誤訊息: 上傳的 excel 內有重複資料`, 'danger') 
+          }
+        })
+        getProduct()
+      }
+      reader.readAsArrayBuffer(fileInput.value)
+    }
+
+const uploadData = () => {
+  if(excelData.value.length > 0) {
+    const api = `${import.meta.env.VITE_APP_URL}/admin/product`
+    for (const row of excelData.value) {
+        const formattedData = { data: row }
+        axios.post(api, formattedData).then(() => {
+          getProduct()
+      })
+    }
+  } else {
+    emitter.emit("webmessage",`錯誤訊息: 請重新上傳 excel`, 'danger') 
+  }
+  excelData.value = ''
+  fileInput.value.value = null
+}
+const downloadData = () => {
+    const api = `${import.meta.env.VITE_APP_URL}/admin/products/all`
+    axios.get(api).then((res) => {
+      const data = Object.keys(res.data.products).map((i) => res.data.products[i])
+      //  data to worksheet
+      const worksheet = XLSX.utils.json_to_sheet(data)
+    
+      // Create a workbook and add the worksheet
+      const workbook = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1')
+    
+      // Export the workbook to Excel file
+      XLSX.writeFile(workbook, 'products.xlsx')
+    })  
+  }
 </script>
 <template>
   <div>
-    <div class="text-end">
-      <!-- Button trigger modal -->
-      <button
-        type="button"
-        class="my-3 btn btn-primary"
-        @click="openModal('new', true)"
-      >
-        新建產品
-      </button>
+    <div class="row justify-content-between">
+      <div class="col-9">
+        <div class="row">
+          <div class="col-4">
+            <input type="file"
+              class="my-3 form-control "
+              ref="fileInput"
+              @change="handleFileChange">
+          </div>
+          <div class="col">
+            <button 
+            type="button"
+            class="my-3 btn btn-light"
+            @click="uploadData">上傳Excel文件(*.xlsx)
+            </button>
+            <button
+            type="button"
+            class="my-3 btn btn-light"
+            @click="downloadData">下載Excel文件
+            </button>   
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <!-- Button trigger modal -->
+        <button
+          type="button"
+          class="my-3 btn btn-primary"
+          @click="openModal('new', true)"
+        >
+          新建產品
+        </button>
+      </div>
     </div>
     <table class="table">
       <thead class="thead-dark">
