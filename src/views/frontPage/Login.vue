@@ -36,9 +36,9 @@ const signin =  () => {
             <div class="card text-center login_bg">
               <div class="card-body">
                 <h5 class="card-title">後台登入</h5>
-                <div class="form-row justify-content-center">
-                  <div class="form-group col-lg-11 col-10 mb-0">
-                    <div class="relative input_icon">
+                <div class="row justify-content-center ">
+                  <div class="col-10 mb-0">
+                    <div class="relative input_icon ">
                       <label for="email"></label>
                       <input
                         type="email"
@@ -51,8 +51,8 @@ const signin =  () => {
                       <i class="material-icons">person</i>
                     </div>
                   </div>
-                  <div class="form-group col-lg-11 col-10 mb-0">
-                    <div class="relative input_icon">
+                  <div class="col-10 mb-0">
+                    <div class="relative input_icon ">
                       <label for="password"></label>
                       <input
                         type="password"
